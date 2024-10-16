@@ -1,22 +1,33 @@
-const { Schema, model } = require("mongoose");
+const { mongoose,Schema, model } = require("mongoose");
 
-// TODO: Please make sure you edit the User model to whatever makes sense in this case
 const userSchema = new Schema(
   {
-    email: {
+    username: {
       type: String,
-      required: [true, 'Email is required.'],
+      required: [true, 'Username is required.'],
       unique: true,
-      lowercase: true,
       trim: true
     },
     password: {
       type: String,
       required: [true, 'Password is required.']
+    },
+    firstName: String,
+    lastName: String,
+    img: String,
+    linkedin: String,
+    github: String,
+    tech:[String],
+    following:[{type:mongoose.Schema.Types.ObjectId,ref:"User"}],
+    medals:{ 
+      projects :{type: String, enum :["bronce","silver","gold"]},
+      comments :{type: String, enum :["bronce","silver","gold"]},
+      following :{type: String, enum :["bronce","silver","gold"]},
+      followers :{type: String, enum :["bronce","silver","gold"]},
+      likes :{type: String, enum :["bronce","silver","gold"]},
     }
   },
   {
-    // this second object adds extra properties: `createdAt` and `updatedAt`    
     timestamps: true
   }
 );
