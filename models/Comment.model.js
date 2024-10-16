@@ -4,7 +4,7 @@ const { mongoose,Schema, model } = require("mongoose");
 const commentSchema = new Schema(
   {
     content: {type:String,required:true},
-    proyect: {type:mongoose.Schema.Types.ObjectId, ref:"Project"},
+    project: {type:mongoose.Schema.Types.ObjectId, ref:"Project"},
     user: {type:mongoose.Schema.Types.ObjectId, ref:"User"}
   },
   {   

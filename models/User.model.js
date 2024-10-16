@@ -20,11 +20,11 @@ const userSchema = new Schema(
     tech:[String],
     following:[{type:mongoose.Schema.Types.ObjectId,ref:"User"}],
     medals:{ 
-      projects :{type: String, enum :["bronce","silver","gold"]},
-      comments :{type: String, enum :["bronce","silver","gold"]},
-      following :{type: String, enum :["bronce","silver","gold"]},
-      followers :{type: String, enum :["bronce","silver","gold"]},
-      likes :{type: String, enum :["bronce","silver","gold"]},
+      projects :{type: String, enum :["stone","bronce","silver","gold"]},
+      comments :{type: String, enum :["stone","bronce","silver","gold"]},
+      following :{type: String, enum :["stone","bronce","silver","gold"]},
+      followers :{type: String, enum :["stone","bronce","silver","gold"]},
+      likes :{type: String, enum :["stone","bronce","silver","gold"]},
     }
   },
   {

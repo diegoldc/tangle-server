@@ -9,20 +9,20 @@ router.post("/signup", async (req, res, next) => {
 
   // validaciones
   if (!username || !password) {
-    res.status(400).json({ message: "Todos los campos son obligatorios" })
+    res.status(400).json({ message: "All fields are mandatory" })
     return
   }
 
   const regexPass = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm
   if(!regexPass.test(password)) {
-    res.status(400).json({message: "la contraseña no es lo suficientemente fuerte"})
+    res.status(400).json({message: "password does not fulfil the requirements"})
     return
   }
 
   try {
     const foundUser = await User.findOne({ username })
     if (foundUser) {
-      res.status(400).json({ message: "Ese nombre ya está en uso" })
+      res.status(400).json({ message: "Name already in use" })
       return
     }
 
@@ -31,7 +31,21 @@ router.post("/signup", async (req, res, next) => {
 
     await User.create({
       username,
-      password: hashPassword
+      password: hashPassword,
+      firstName: "",
+      lastName: "",
+      img: "",
+      linkedin: "",
+      github: "",
+      tech:[],
+      following:[],
+      medals:{ 
+        projects :"stone",
+        comments :"stone",
+        following :"stone",
+        followers :"stone",
+        likes :"stone",
+      }
     })
     res.sendStatus(201)
     
@@ -46,21 +60,21 @@ router.post("/login", async (req, res, next) => {
   const {username, password} = req.body
   
   if(!username || !password){
-    res.status(400).json({message: "Todos los campos son obligatorios"})
+    res.status(400).json({message: "All fields are mandatory"})
     return
   }
   
   try {
     const foundUser = await User.findOne({username})
     if(!foundUser){
-      res.status(400).json({message:"usuario no encontrado con ese nombre"})
+      res.status(400).json({message:"User not found"})
       return
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, foundUser.password)
     
     if (!isPasswordCorrect){
-      res.status(400).json({message:"contraseña incorrecta"})
+      res.status(400).json({message:"Incorrect password"})
       return
     }
     
