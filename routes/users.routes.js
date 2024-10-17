@@ -14,6 +14,16 @@ router.get("/:userId", async (req,res,next) => {
   }
 })
 
+router.get("/", async (req,res,next) => {
+  try {
+    const response = await User.find({},"username img")
+    res.status(200).json(response)
+  } catch (error) {
+    console.log("error al traer todos los usuarios",error)
+    next(error)
+  }
+})
+
 router.patch("/follow/:userId", verifyToken, async (req,res,next) => {
   //! el cliente debe enviar el usuario que quiere seguir a otro por params y el usuario a seguir por body con la propiedad "followedUserId"
   const {followedUserId} = req.body
