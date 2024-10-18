@@ -40,7 +40,8 @@ router.get("/", async (req, res, next) => {
 router.get("/:projectId", async (req, res, next) => {
   try {
     const response = await Project.findById(req.params.projectId)
-      .populate("user", "username img medals")
+      .populate("user","username img medals")
+      .populate("collaborators","username img medals")
     res.status(200).json(response)
   } catch (error) {
     console.log("error al traer un solo usuario por ID", error)
@@ -84,31 +85,6 @@ router.put("/:projectId", verifyToken, async (req, res, next) => {
   }
 })
 
-router.patch("/likes/:projectId", verifyToken, async (req, res, next) => {
-
-  const { userId } = req.body
-
-  try {
-    const updatedProject = await Project.findByIdAndUpdate(
-      req.params.projectId,
-      { $addToSet: { likes: userId } }, // addToSet verifica antes de añadir al array si ya existe uno igual
-      { new: true }
-    );
-
-
-    if (!updatedProject) {
-      return res.status(404).json({ message: "Project not found" });
-    }
-
-    res.status(200).json(updatedProject);
-
-
-  } catch (error) {
-    console.log("error al actualizar likes", error)
-    next(error)
-  }
-})
-
 router.patch("/collabs/:projectId", verifyToken, async (req, res, next) => {
 
   const { userId } = req.body
@@ -130,6 +106,41 @@ router.patch("/collabs/:projectId", verifyToken, async (req, res, next) => {
 
   } catch (error) {
     console.log("error al actualizar colaboradores", error)
+    next(error)
+  }
+})
+
+router.patch("/likes/:projectId", verifyToken, async (req, res, next) => {
+  const { userId } = req.body
+  try {
+    
+    const updatedProject = await Project.findByIdAndUpdate(
+      req.params.projectId,
+      { $addToSet: { likes: userId } }, // addToSet verifica antes de añadir al array si ya existe uno igual
+      { new: true }
+    );
+
+
+    if (!updatedProject) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    res.status(200).json(updatedProject);
+
+
+  } catch (error) {
+    console.log("error al actualizar likes", error)
+    next(error)
+  }
+})
+
+router.patch("/un-likes/:projectId", verifyToken, async (req,res,next) => {
+  const { likes } = req.body
+  try {
+    const response = await Project.findByIdAndUpdate(req.params.projectId,{likes:likes},{new:true})
+    res.status(200).json({response})
+  } catch (error) {
+    console.log("error al eliminar un like",error)
     next(error)
   }
 })
