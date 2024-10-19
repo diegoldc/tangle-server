@@ -2,14 +2,26 @@ const User = require("../models/User.model")
 const bcrypt = require("bcryptjs")
 const jwt = require('jsonwebtoken')
 const router = require("express").Router();
-const verifyToken = require("../middlewares/auth.middlewares")
+const verifyToken = require("../middlewares/auth.middlewares");
+const { default: mongoose } = require("mongoose");
 
 router.get("/:userId", async (req,res,next) => {
   try {
     const response = await User.findById(req.params.userId)
+    .populate("following","username img")
     res.status(200).json(response)
   } catch (error) {
     console.log("error al buscar un usuario", error)
+    next(error)
+  }
+})
+
+router.get("/followers/:userId", async (req,res,next) => {
+  try {
+    const response = await User.find({ following: { $in: [req.params.userId] } }, "username img")
+    res.status(200).json(response)
+  } catch (error) {
+    console.log("error al buscar los followers de un usuario",error)
     next(error)
   }
 })
@@ -37,6 +49,18 @@ router.patch("/follow/:userId", verifyToken, async (req,res,next) => {
     res.sendStatus(202)
   } catch (error) {
     console.log("error al seguir a un usuario",error)
+    next(error)
+  }
+})
+
+router.patch("/un-follow/:userId", verifyToken, async (req,res,next) => {
+  const {following} = req.body
+  
+  try {
+    const response = await User.findByIdAndUpdate(req.params.userId,{following:following}, {new:true})
+    res.status(200).json({response})
+  } catch (error) {
+    console.log("error al eliminar un seguidor",error)
     next(error)
   }
 })
