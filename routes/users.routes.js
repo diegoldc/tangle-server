@@ -87,24 +87,39 @@ router.patch("/:userId/profile", verifyToken, async(req,res,next) => {
 
 router.patch("/:userId/password",verifyToken, async(req, res, next) => {
 
-  const {password} = req.body
-
-  if(!password){
+  const {oldPassword, newPassword} = req.body
+  
+  
+  
+  if(!newPassword){
     res.status(400).json({message:"Please introduce your new password"})
     return
   }
-
+  
   const regexPass = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm
-  if(!regexPass.test(password)) {
+  if(!regexPass.test(newPassword)) {
     res.status(400).json({message: "password does not fulfil the requirements"})
     return
   }
   
   try {
-    
-    const salt = await bcrypt.genSalt(12)
-    const hashPassword = await bcrypt.hash(password, salt)
+    const foundUser = await User.findById(req.params.userId)
 
+    if(!foundUser){
+      res.status(400).json({message:"User not found"})
+      return
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(oldPassword, foundUser.password)
+    
+    if (!isPasswordCorrect){
+      res.status(400).json({message:"Previous password is incorrect"})
+      return
+    }
+
+    const salt = await bcrypt.genSalt(12)
+    const hashPassword = await bcrypt.hash(newPassword, salt)
+    
     await User.findByIdAndUpdate(req.params.userId,{
       password:hashPassword
     })
