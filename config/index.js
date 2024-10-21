@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 // We reuse this import in order to have access to the `body` property in requests
 const express = require("express");
 
@@ -12,6 +14,8 @@ const cookieParser = require("cookie-parser");
 // ℹ️ Needed to accept from requests from 'the outside'. CORS stands for cross origin resource sharing
 // unless the request if from the same domain, by default express wont accept POST requests
 const cors = require("cors");
+
+
 
 const FRONTEND_URL = process.env.ORIGIN || "http://localhost:5173";
 
@@ -32,7 +36,9 @@ module.exports = (app) => {
   app.use(logger("dev"));
 
   // To have access to `body` property in the request
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: false }));
+  app.use(express.json({limit: "10mb"}));
+  app.use(express.urlencoded({ limit: "10mb", extended: false }));
   app.use(cookieParser());
+
+
 };

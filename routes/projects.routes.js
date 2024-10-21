@@ -62,6 +62,18 @@ router.get("/:projectId", async (req, res, next) => {
   }
 })
 
+router.get("/tech/:tech", async (req,res,next) => {
+  console.log(req.params.tech)
+  try {
+    const response = await Project.find({ tech:{$regex: req.params.tech, $options: "i"}})
+    .sort({ creationDate: -1 })
+    res.status(200).json(response)
+  } catch (error) {
+    console.log("error al buscar proyectos por technologia",error)
+    next(error)
+  }
+})
+
 router.get("/user/:userId", async (req, res, next) => {
   try {
     const response = await Project.find({ user: req.params.userId })

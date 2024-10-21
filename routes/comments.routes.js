@@ -45,6 +45,19 @@ router.get("/:projectId", async (req, res, next) => {
   }
 })
 
+// Ruta para los comentarios de un usuario
+router.get("/user/:userId", async (req, res, next) => {
+  console.log("parametro",req.params.userId)
+  try {
+    const response = await Comment.find({user:req.params.userId})
+    console.log(response)
+    res.status(200).json(response)
+  } catch (error) {
+    console.log("error al buscar todos los comentarios de un usuario", error)
+    next(error)
+  }
+})
+
 router.put("/:commentId", verifyToken, async (req,res,next) => {
   if(!req.body.content){
     res.status(400).json({message:"Comment must have content"})

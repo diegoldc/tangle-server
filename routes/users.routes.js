@@ -5,6 +5,17 @@ const router = require("express").Router();
 const verifyToken = require("../middlewares/auth.middlewares");
 const { default: mongoose } = require("mongoose");
 
+router.get("/find", async (req,res,next) => {
+
+  try {
+    const response = await User.find({username:{$regex: req.query.username, $options: "i"}},"username img")
+    res.status(200).json(response)
+  } catch (error) {
+    console.log("error al traer todos los usuarios",error)
+    next(error)
+  }
+})
+
 router.get("/:userId", async (req,res,next) => {
   try {
     const response = await User.findById(req.params.userId)
@@ -15,6 +26,7 @@ router.get("/:userId", async (req,res,next) => {
     next(error)
   }
 })
+
 
 router.get("/following/:userId", async (req,res,next) => {
   try {
@@ -36,6 +48,7 @@ router.get("/followers/:userId", async (req,res,next) => {
     next(error)
   }
 })
+
 
 router.get("/", async (req,res,next) => {
   try {
