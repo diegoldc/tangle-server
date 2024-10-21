@@ -29,10 +29,23 @@ router.get("/", async (req, res, next) => {
     const response = await Project.find({})
       .populate("user", "username img medals")
       .sort({ creationDate: -1 })
-    console.log(response)
+    // console.log(response)
     res.status(200).json(response)
   } catch (error) {
     console.log("error al buscar todos los proyectos", error)
+    next(error)
+  }
+})
+
+router.post("/my-network", verifyToken, async (req,res,next) => {
+  try {
+    const {userArray} = req.body
+    const response = await Project.find({'user': {$in:userArray}})
+    .populate("user","username img medals")
+    .populate("collaborators","username img medals")
+    res.status(200).json(response)
+  } catch (error) {
+    console.log("error al buscar los proyectos de tus seguidores",error)
     next(error)
   }
 })

@@ -66,6 +66,7 @@ router.post("/login", async (req, res, next) => {
   
   try {
     const foundUser = await User.findOne({username})
+    .select('+password')
     if(!foundUser){
       res.status(400).json({message:"User not found"})
       return

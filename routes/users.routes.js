@@ -16,6 +16,17 @@ router.get("/:userId", async (req,res,next) => {
   }
 })
 
+router.get("/following/:userId", async (req,res,next) => {
+  try {
+    const response = await User.findById(req.params.userId)
+    .select("following")
+    res.status(200).json(response)
+  } catch (error) {
+    console.log("error al buscar un usuario", error)
+    next(error)
+  }
+})
+
 router.get("/followers/:userId", async (req,res,next) => {
   try {
     const response = await User.find({ following: { $in: [req.params.userId] } }, "username img")
@@ -89,8 +100,6 @@ router.patch("/:userId/password",verifyToken, async(req, res, next) => {
 
   const {oldPassword, newPassword} = req.body
   
-  
-  
   if(!newPassword){
     res.status(400).json({message:"Please introduce your new password"})
     return
@@ -104,6 +113,7 @@ router.patch("/:userId/password",verifyToken, async(req, res, next) => {
   
   try {
     const foundUser = await User.findById(req.params.userId)
+    .select('+password')
 
     if(!foundUser){
       res.status(400).json({message:"User not found"})
