@@ -34,7 +34,7 @@ router.post("/signup", async (req, res, next) => {
       password: hashPassword,
       firstName: "",
       lastName: "",
-      img: "",
+      img: "http://res.cloudinary.com/dtvuykwtv/image/upload/v1729712984/l2q379sewdddlvdengbb.png",
       linkedin: "",
       github: "",
       tech:[],
