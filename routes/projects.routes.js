@@ -24,14 +24,18 @@ router.post("/", verifyToken, async (req, res, next) => {
   }
 })
 
-router.get("/", async (req, res, next) => {
+router.get("/page/:page", async (req, res, next) => {
+  const {page} = req.params
+  const pageNum = parseInt(page)-1
   try {
     const response = await Project.find({})
+    .sort({ creationDate: -1 })
+    .limit(10)
+    .skip(10 * pageNum)
     .populate([
       { path: "user", select: "username img medals" },
       { path: "collaborators", select: "username img" }
     ])
-      .sort({ creationDate: -1 })
     // console.log(response)
     res.status(200).json(response)
   } catch (error) {
@@ -40,10 +44,15 @@ router.get("/", async (req, res, next) => {
   }
 })
 
-router.post("/my-network", verifyToken, async (req,res,next) => {
+router.post("/my-network/:page", verifyToken, async (req,res,next) => {
+  const {page} = req.params
+  const pageNum = parseInt(page)-1
   try {
     const {userArray} = req.body
     const response = await Project.find({'user': {$in:userArray}})
+    .sort({ creationDate: -1 })
+    .limit(10)
+    .skip(10 * pageNum)
     .populate("user","username img medals")
     .populate("collaborators","username img medals")
     res.status(200).json(response)
