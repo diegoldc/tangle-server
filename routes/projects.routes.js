@@ -90,6 +90,22 @@ router.get("/tech/:tech", async (req,res,next) => {
   }
 })
 
+router.get("/collaborations/:userId", async (req,res,next) => {
+  console.log(req.params.userId)
+  try {
+    const response = await Project.find({ collaborators:{$in: [req.params.userId]}})
+    .populate([
+      { path: "user", select: "username img medals" },
+      { path: "collaborators", select: "username img" }
+    ])
+    .sort({ creationDate: -1 })
+    res.status(200).json(response)
+  } catch (error) {
+    console.log("error al buscar proyectos por technologia",error)
+    next(error)
+  }
+})
+
 router.get("/user/:userId", async (req, res, next) => {
   try {
     const response = await Project.find({ user: req.params.userId })
