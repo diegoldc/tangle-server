@@ -27,7 +27,10 @@ router.post("/", verifyToken, async (req, res, next) => {
 router.get("/", async (req, res, next) => {
   try {
     const response = await Project.find({})
-      .populate("user", "username img medals")
+    .populate([
+      { path: "user", select: "username img medals" },
+      { path: "collaborators", select: "username img" }
+    ])
       .sort({ creationDate: -1 })
     // console.log(response)
     res.status(200).json(response)
@@ -66,6 +69,10 @@ router.get("/tech/:tech", async (req,res,next) => {
   console.log(req.params.tech)
   try {
     const response = await Project.find({ tech:{$regex: req.params.tech, $options: "i"}})
+    .populate([
+      { path: "user", select: "username img medals" },
+      { path: "collaborators", select: "username img" }
+    ])
     .sort({ creationDate: -1 })
     res.status(200).json(response)
   } catch (error) {
