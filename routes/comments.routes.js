@@ -8,7 +8,6 @@ router.get("/", async (req, res, next) => {
     const response = await Comment.find({})
       .populate("user", "username img medals")
       .populate("project","name creationDate")
-      // .sort({ creationDate: -1 })
     console.log(response)
     res.status(200).json(response)
   } catch (error) {
@@ -45,7 +44,6 @@ router.get("/:projectId", async (req, res, next) => {
   }
 })
 
-// Ruta para los comentarios de un usuario
 router.get("/user/:userId", async (req, res, next) => {
   console.log("parametro",req.params.userId)
   try {
