@@ -84,28 +84,6 @@ Comments:{
 
 ## API Endpoints (backend routes)
 
-| HTTP Method | URL                         | Request Body                 | Success status | Error Status | Description                                                    |
-| ----------- | --------------------------- | ---------------------------- | -------------- | ------------ | -------------------------------------------------------------- |
-| POST        | `/auth/signup`              | {name, email, password}      | 201            | 400          | Registers the user in the Database                             |
-| POST        | `/auth/login`               | {username, password}         | 200            | 400          | Validates credentials, creates and sends Token                 |
-| GET         | `/auth/verify`              |                              | 200            | 401          | Verifies the user Token                                        |
-| GET         | `/game`                     |                              | 200            | 400          | Show games in the DB, only titles and images                   |
-| POST        | `/game`                     | {apiId}                      | 201            | 400          | Creates a new Game Document                                    |
-| GET         | `/game/:gameId`             |                              | 200            | 400, 401     | Sends all game Details                                         |
-| PUT         | `/game/:gameId`             |                              | 200            | 400, 401     | Edits game document                                            |
-| DELETE      | `/game/:gameId`             |                              | 200            | 401          | Deletes game document                                          |
-| GET         | `/profile`                  |                              | 200            | 401          | Sends user profile details                                     |
-| PUT         | `/profile`                  |                              | 200            | 400, 401     | Edits the user profile                                         |
-| PATCH       | `/profile/:gameId`          |                              | 200            | 401          | Adds game to favourite                                         |
-| GET         | `/gameApi`                  |                              | 200            | 401          | Gets game data from API (Search)                               |
-| GET         | `/gameApi/:apiId`           |                              | 200            | 401          | Gets game details from API                                     |
-  
-
-
-
-
-
-
   | HTTP Method | URL                                | Request Body                                                                 | Success status | Error Status | Description                                                                                      |
 | ----------- | ---------------------------------- | ---------------------------------------------------------------------------- | -------------- | ------------ | ------------------------------------------------------------------------------------------------ |
 | POST        | `/api/auth/signup`                 | {username, password, name}                                                   | 201            | 400          | Crea un usuario                                                                                  |
