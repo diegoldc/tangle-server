@@ -27,7 +27,6 @@ router.get("/:userId", async (req,res,next) => {
   }
 })
 
-
 router.get("/following/:userId", async (req,res,next) => {
   try {
     const response = await User.findById(req.params.userId)
@@ -48,7 +47,6 @@ router.get("/followers/:userId", async (req,res,next) => {
     next(error)
   }
 })
-
 
 router.get("/", async (req,res,next) => {
   try {

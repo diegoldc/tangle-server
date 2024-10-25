@@ -24,11 +24,18 @@ router.post("/", verifyToken, async (req, res, next) => {
   }
 })
 
-router.get("/", async (req, res, next) => {
+router.get("/page/:page", async (req, res, next) => {
+  const {page} = req.params
+  const pageNum = parseInt(page)-1
   try {
     const response = await Project.find({})
-      .populate("user", "username img medals")
-      .sort({ creationDate: -1 })
+    .sort({ creationDate: -1 })
+    .limit(10)
+    .skip(10 * pageNum)
+    .populate([
+      { path: "user", select: "username img medals" },
+      { path: "collaborators", select: "username img" }
+    ])
     // console.log(response)
     res.status(200).json(response)
   } catch (error) {
@@ -37,10 +44,15 @@ router.get("/", async (req, res, next) => {
   }
 })
 
-router.post("/my-network", verifyToken, async (req,res,next) => {
+router.post("/my-network/:page", verifyToken, async (req,res,next) => {
+  const {page} = req.params
+  const pageNum = parseInt(page)-1
   try {
     const {userArray} = req.body
     const response = await Project.find({'user': {$in:userArray}})
+    .sort({ creationDate: -1 })
+    .limit(10)
+    .skip(10 * pageNum)
     .populate("user","username img medals")
     .populate("collaborators","username img medals")
     res.status(200).json(response)
@@ -66,6 +78,26 @@ router.get("/tech/:tech", async (req,res,next) => {
   console.log(req.params.tech)
   try {
     const response = await Project.find({ tech:{$regex: req.params.tech, $options: "i"}})
+    .populate([
+      { path: "user", select: "username img medals" },
+      { path: "collaborators", select: "username img" }
+    ])
+    .sort({ creationDate: -1 })
+    res.status(200).json(response)
+  } catch (error) {
+    console.log("error al buscar proyectos por technologia",error)
+    next(error)
+  }
+})
+
+router.get("/collaborations/:userId", async (req,res,next) => {
+  console.log(req.params.userId)
+  try {
+    const response = await Project.find({ collaborators:{$in: [req.params.userId]}})
+    .populate([
+      { path: "user", select: "username img medals" },
+      { path: "collaborators", select: "username img" }
+    ])
     .sort({ creationDate: -1 })
     res.status(200).json(response)
   } catch (error) {
